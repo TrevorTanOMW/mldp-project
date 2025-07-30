@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import joblib
 
 # Load trained model
@@ -31,12 +30,19 @@ columns = [
     'Market Category Simplified_performance'
 ]
 
+# Extract dropdown options from column names
+makes = sorted([col.replace("Make_", "") for col in columns if col.startswith("Make_")])
+fuel_types = sorted([col.replace("Engine Fuel Type_", "") for col in columns if col.startswith("Engine Fuel Type_")])
+transmissions = sorted([col.replace("Transmission Type_", "") for col in columns if col.startswith("Transmission Type_")])
+drivetrains = sorted([col.replace("Driven Wheels_", "") for col in columns if col.startswith("Driven Wheels_")])
+vehicle_sizes = sorted([col.replace("Vehicle Size_", "") for col in columns if col.startswith("Vehicle Size_")])
+vehicle_styles = sorted([col.replace("Vehicle Style_", "") for col in columns if col.startswith("Vehicle Style_")])
+
 # UI
 st.title("🚗 Luxury Car Price Predictor")
-
 st.markdown("Fill in the details of the car below to predict its MSRP.")
 
-# Inputs
+# User inputs
 year = st.number_input("Year", value=2021, min_value=1990, max_value=2025)
 horsepower = st.number_input("Horsepower", value=542)
 engine_cylinders = st.number_input("Engine Cylinders", value=8)
@@ -44,12 +50,12 @@ num_doors = st.selectbox("Number of Doors", [2, 4])
 highway_mpg = st.number_input("Highway MPG", value=24)
 city_mpg = st.number_input("City MPG", value=15)
 
-make = st.selectbox("Make", ["Bentley", "Ferrari", "Porsche"])
-fuel_type = st.selectbox("Fuel Type", ["premium unleaded (required)"])
-transmission = st.selectbox("Transmission", ["AUTOMATIC"])
-driven_wheels = st.selectbox("Driven Wheels", ["four wheel drive"])
-vehicle_size = st.selectbox("Vehicle Size", ["Midsize"])
-vehicle_style = st.selectbox("Vehicle Style", ["Coupe"])
+make = st.selectbox("Make", makes)
+fuel_type = st.selectbox("Fuel Type", fuel_types)
+transmission = st.selectbox("Transmission", transmissions)
+driven_wheels = st.selectbox("Driven Wheels", drivetrains)
+vehicle_size = st.selectbox("Vehicle Size", vehicle_sizes)
+vehicle_style = st.selectbox("Vehicle Style", vehicle_styles)
 
 luxury = st.checkbox("Luxury Category", value=True)
 performance = st.checkbox("Performance Category", value=True)
@@ -78,9 +84,8 @@ if st.button("Predict MSRP"):
     if performance:
         input_data['Market Category Simplified_performance'] = 1
 
-    # Predict
+    # Convert to DataFrame and predict
     input_df = pd.DataFrame([input_data])
     prediction = model.predict(input_df)[0]
 
     st.success(f"💰 Predicted MSRP: **${prediction:,.2f}**")
-
