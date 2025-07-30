@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 import joblib
 
-# Load trained model
+# Load the trained model
 model = joblib.load("luxuryCar_rf.pkl")
 
-# Define column names (same as training)
+# Updated column list
 columns = [
     'Year', 'Horsepower', 'Engine Cylinders', 'Number of Doors', 'Highway MPG', 'City MPG',
     'Make_Alfa Romeo', 'Make_Aston Martin', 'Make_Audi', 'Make_BMW', 'Make_Bentley', 'Make_Bugatti',
@@ -16,11 +16,10 @@ columns = [
     'Make_Mercedes-Benz', 'Make_Mitsubishi', 'Make_Nissan', 'Make_Oldsmobile', 'Make_Plymouth',
     'Make_Pontiac', 'Make_Porsche', 'Make_Rolls-Royce', 'Make_Saab', 'Make_Scion', 'Make_Spyker',
     'Make_Subaru', 'Make_Suzuki', 'Make_Toyota', 'Make_Volkswagen', 'Make_Volvo',
-    'Engine Fuel Type_electric', 'Engine Fuel Type_flex-fuel (unleaded/E85)', 'Engine Fuel Type_natural gas',
+    'Engine Fuel Type_flex-fuel (unleaded/E85)', 'Engine Fuel Type_natural gas',
     'Engine Fuel Type_premium unleaded (recommended)', 'Engine Fuel Type_premium unleaded (required)',
     'Engine Fuel Type_regular unleaded',
-    'Transmission Type_AUTOMATIC', 'Transmission Type_DIRECT_DRIVE', 'Transmission Type_MANUAL',
-    'Transmission Type_UNKNOWN',
+    'Transmission Type_AUTOMATIC', 'Transmission Type_MANUAL',
     'Driven Wheels_four wheel drive', 'Driven Wheels_front wheel drive', 'Driven Wheels_rear wheel drive',
     'Vehicle Size_Large', 'Vehicle Size_Midsize',
     'Vehicle Style_Coupe', 'Vehicle Style_Hatchback', 'Vehicle Style_Pickup', 'Vehicle Style_SUV',
@@ -38,31 +37,33 @@ drivetrains = sorted([col.replace("Driven Wheels_", "") for col in columns if co
 vehicle_sizes = sorted([col.replace("Vehicle Size_", "") for col in columns if col.startswith("Vehicle Size_")])
 vehicle_styles = sorted([col.replace("Vehicle Style_", "") for col in columns if col.startswith("Vehicle Style_")])
 
-# UI
+# UI layout
 st.title("🚗 Luxury Car Price Predictor")
 st.markdown("Fill in the details of the car below to predict its MSRP.")
 
-# User inputs
+# Input fields
 year = st.number_input("Year", value=2021, min_value=1990, max_value=2025)
-horsepower = st.number_input("Horsepower", value=542)
+horsepower = st.number_input("Horsepower", value=400)
 engine_cylinders = st.number_input("Engine Cylinders", value=8)
 num_doors = st.selectbox("Number of Doors", [2, 4])
-highway_mpg = st.number_input("Highway MPG", value=24)
-city_mpg = st.number_input("City MPG", value=15)
+highway_mpg = st.number_input("Highway MPG", value=25)
+city_mpg = st.number_input("City MPG", value=18)
 
 make = st.selectbox("Make", makes)
-fuel_type = st.selectbox("Fuel Type", fuel_types)
-transmission = st.selectbox("Transmission", transmissions)
+fuel_type = st.selectbox("Engine Fuel Type", fuel_types)
+transmission = st.selectbox("Transmission Type", transmissions)
 driven_wheels = st.selectbox("Driven Wheels", drivetrains)
 vehicle_size = st.selectbox("Vehicle Size", vehicle_sizes)
 vehicle_style = st.selectbox("Vehicle Style", vehicle_styles)
 
 luxury = st.checkbox("Luxury Category", value=True)
 performance = st.checkbox("Performance Category", value=True)
+green = st.checkbox("Green Vehicle Category")
+diesel = st.checkbox("Diesel Category")
+crossover = st.checkbox("Crossover Category")
 
-# Predict button
+# Prediction logic
 if st.button("Predict MSRP"):
-    # Create input template
     input_data = {col: 0 for col in columns}
     input_data.update({
         'Year': year,
@@ -83,8 +84,13 @@ if st.button("Predict MSRP"):
         input_data['Market Category Simplified_luxury'] = 1
     if performance:
         input_data['Market Category Simplified_performance'] = 1
+    if green:
+        input_data['Market Category Simplified_green'] = 1
+    if diesel:
+        input_data['Market Category Simplified_diesel'] = 1
+    if crossover:
+        input_data['Market Category Simplified_crossover'] = 1
 
-    # Convert to DataFrame and predict
     input_df = pd.DataFrame([input_data])
     prediction = model.predict(input_df)[0]
 
