@@ -15,21 +15,16 @@ model = joblib.load("luxuryCar_rf.pkl")
 
 # Updated column list
 columns = [
+    'Make_encoded',
     'Year', 'Horsepower', 'Engine Cylinders', 'Number of Doors', 'Highway MPG', 'City MPG',
- 
     'Engine Fuel Type_diesel', 'Engine Fuel Type_flex-fuel (unleaded/E85)', 
     'Engine Fuel Type_premium unleaded (recommended)', 'Engine Fuel Type_premium unleaded (required)',
     'Engine Fuel Type_regular unleaded',
-
     'Transmission Type_AUTOMATED_MANUAL', 'Transmission Type_AUTOMATIC', 'Transmission Type_MANUAL',
-
     'Driven Wheels_all wheel drive', 'Driven Wheels_four wheel drive', 'Driven Wheels_front wheel drive', 'Driven Wheels_rear wheel drive',
-    
     'Vehicle Size_Compact', 'Vehicle Size_Large', 'Vehicle Size_Midsize',
-    
     'Vehicle Style_Convertible', 'Vehicle Style_Coupe', 'Vehicle Style_Hatchback', 'Vehicle Style_Pickup', 'Vehicle Style_SUV',
     'Vehicle Style_Sedan', 'Vehicle Style_Van', 'Vehicle Style_Wagon',
-    
     'Market Category Simplified_compact', 'Market Category Simplified_crossover', 'Market Category Simplified_diesel',
     'Market Category Simplified_green', 'Market Category Simplified_luxury',
     'Market Category Simplified_performance'
