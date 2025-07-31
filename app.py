@@ -33,6 +33,8 @@ columns = [
     'Market Category Simplified_compact', 'Market Category Simplified_crossover', 'Market Category Simplified_diesel',
     'Market Category Simplified_green', 'Market Category Simplified_luxury',
     'Market Category Simplified_performance'
+
+    'Make_encoded'
 ]
 
 brand_avg = {'Acura': 35344.18407960199,
