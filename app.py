@@ -600,7 +600,13 @@ if st.button("Calculate Performance Value"):
         input_data['Market Category Simplified_compact'] = 1
 
     input_df = pd.DataFrame([input_data])
+
+    # Align columns exactly with the model's expectations
+    input_df = input_df[model.feature_names_in_]
+    
+    # Make prediction
     prediction = model.predict(input_df)[0]
+
 
     # Determine performance tier
     if prediction >= 200000:
